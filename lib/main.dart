@@ -884,4 +884,4 @@ class _ChatScreenState
                           decoration:
                               BoxDecoration(
                             color: Colors
-                      
+                      class ProfilePage
