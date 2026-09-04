@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "865334337315",
+    "project_id": "sapa-b1fc3",
+    "storage_bucket": "sapa-b1fc3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865334337315:android:1ee6edcaa89f18f3907696",
+        "android_client_info": {
+          "package_name": "com.disapa.sapa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx_4Sno_smzHRS3X1U64yNGSZ9K57TCEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
