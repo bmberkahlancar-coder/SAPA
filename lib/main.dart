@@ -884,4 +884,19 @@ class _ChatScreenState
                           decoration:
                               BoxDecoration(
                             color: Colors
-                      
+                      class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profil')),
+      body: const Center(
+        child: Text(
+          'Profil SAPA',
+          style: TextStyle(fontSize: 22),
+        ),
+      ),
+    );
+  }
+                      }
