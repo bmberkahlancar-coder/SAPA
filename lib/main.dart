@@ -10,77 +10,15 @@ class SapaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SAPA',
       debugShowCheckedModeBanner: false,
+      title: 'SAPA',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.green,
         ),
         useMaterial3: true,
       ),
-      home: const SplashPage(),
-    );
-  }
-}
-
-class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
-
-  @override
-  State<SplashPage> createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.green,
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.chat_bubble,
-              color: Colors.white,
-              size: 90,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'SAPA',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 42,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 4,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Aplikasi Chat',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-      ),
+      home: const HomePage(),
     );
   }
 }
@@ -89,113 +27,95 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() =>
+      _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;
+class _HomePageState
+    extends State<HomePage> {
 
-  final List<Map<String, String>> chats = [
-    {
-      'name': 'Yanti',
-      'message': 'Halo, Mas! Lagi apa? 😊',
-      'time': '10:30',
-    },
-    {
-      'name': 'Budi',
-      'message': 'Nanti jadi berangkat?',
-      'time': '09:45',
-    },
-    {
-      'name': 'Siti',
-      'message': 'Terima kasih ya!',
-      'time': 'Kemarin',
-    },
+  int index = 0;
+
+  final pages = const [
+    ChatPage(),
+    ContactPage(),
+    SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'SAPA',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        title: const Text('SAPA'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: SapaSearch(),
+              );
+            },
           ),
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: chats.length,
-        itemBuilder: (context, index) {
-          final chat = chats[index];
-
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.green.shade200,
-              child: Text(
-                chat['name']!.substring(0, 1),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            title: Text(
-              chat['name']!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(chat['message']!),
-            trailing: Text(
-              chat['time']!,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                    name: chat['name']!,
-                  ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(
+                SnackBar(
+                  content: Text(value),
                 ),
               );
             },
-          );
-        },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'Profil',
+                child: Text('Profil'),
+              ),
+              const PopupMenuItem(
+                value: 'Status',
+                child: Text('Status'),
+              ),
+            ],
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        onPressed: () {},
-        child: const Icon(Icons.chat),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
+      body: pages[index],
+      floatingActionButton:
+          index == 0
+              ? FloatingActionButton(
+                  backgroundColor:
+                      Colors.green,
+                  onPressed: () {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Chat baru akan segera dibuat',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.chat,
+                    color: Colors.white,
+                  ),
+                )
+              : null,
+      bottomNavigationBar:
+          NavigationBar(
+        selectedIndex: index,
+        onDestinationSelected: (value) {
           setState(() {
-            selectedIndex = index;
+            index = value;
           });
         },
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.chat_bubble_outline),
-            selectedIcon: Icon(Icons.chat_bubble),
+            icon: Icon(Icons.chat_outlined),
+            selectedIcon: Icon(Icons.chat),
             label: 'Chat',
           ),
           NavigationDestination(
@@ -214,117 +134,104 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class ChatPage extends StatefulWidget {
-  final String name;
-
-  const ChatPage({
-    super.key,
-    required this.name,
-  });
-
-  @override
-  State<ChatPage> createState() => _ChatPageState();
-}
-
-class _ChatPageState extends State<ChatPage> {
-  final TextEditingController messageController = TextEditingController();
-
-  final List<String> messages = [
-    'Halo 👋',
-    'Selamat datang di SAPA!',
-  ];
-
-  void sendMessage() {
-    final message = messageController.text.trim();
-
-    if (message.isNotEmpty) {
-      setState(() {
-        messages.add(message);
-      });
-
-      messageController.clear();
-    }
-  }
-
-  @override
-  void dispose() {
-    messageController.dispose();
-    super.dispose();
-  }
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.name),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(30),
+        child: Text(
+          '👋 Selamat datang di SAPA!\n\n'
+          'Mulailah percakapan Anda dengan nyaman '
+          'dan tetap dekat dengan orang-orang '
+          'tersayang. 💚',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+          ),
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return Align(
-                  alignment: index.isEven
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: index.isEven
-                          ? Colors.grey.shade200
-                          : Colors.green.shade200,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Text(
-                      messages[index],
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: messageController,
-                      onSubmitted: (_) => sendMessage(),
-                      decoration: InputDecoration(
-                        hintText: 'Tulis pesan...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                      onPressed: sendMessage,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+    );
+  }
+}
+
+class ContactPage extends StatelessWidget {
+  const ContactPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Kontak SAPA',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Pengaturan SAPA',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class SapaSearch
+    extends SearchDelegate<String> {
+
+  @override
+  List<Widget>? buildActions(
+      BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(
+      BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, '');
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(
+      BuildContext context) {
+    return Center(
+      child: Text(
+        'Mencari: $query',
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(
+      BuildContext context) {
+    return const Center(
+      child: Text(
+        'Cari percakapan atau kontak',
       ),
     );
   }
