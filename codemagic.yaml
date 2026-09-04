@@ -8,8 +8,10 @@ workflows:
       flutter: stable
 
     scripts:
-      - name: Create Flutter Android project files
-        script: flutter create --platforms=android .
+      - name: Recreate Flutter Android project
+        script: |
+          rm -rf android
+          flutter create --platforms=android .
 
       - name: Get Flutter packages
         script: flutter pub get
